@@ -7,30 +7,35 @@ import styles from './Post.module.css'
 import { ChangeEvent, FormEvent, InvalidEvent, useState } from 'react'
 
 interface Author {
-  name: string;
-  role: string;
-  avatarUrl: string;
+  name: string
+  role: string
+  avatarUrl: string
 }
 
 interface PostProps {
-  author: Author;
-  publishedAt: Date;
-  content: Content[];
+  post: PostType
 }
 
 interface Content {
-  type: 'paragraph' | 'link';
-  content: string;
+  type: 'paragraph' | 'link'
+  content: string
 }
 
-export function Post({ author, publishedAt, content }: PostProps) {
+export interface PostType {
+  id: number
+  author: Author
+  publishedAt: Date
+  content: Content[]
+}
 
-  const publishedDateFormatted = format(publishedAt, "dd 'de' LLLL 'às' HH:mm'h'", 
+export function Post({ post }: PostProps) {
+
+  const publishedDateFormatted = format(post.publishedAt, "dd 'de' LLLL 'às' HH:mm'h'", 
     {
       locale: ptBR
     })
 
-  const publishedDateRelativeToNow = formatDistanceToNow(publishedAt, 
+  const publishedDateRelativeToNow = formatDistanceToNow(post.publishedAt, 
     {
       locale: ptBR,
       addSuffix: true
@@ -75,21 +80,21 @@ export function Post({ author, publishedAt, content }: PostProps) {
         <div className={styles.author}>
 
           <Avatar 
-            src={author.avatarUrl}
+            src={post.author.avatarUrl}
           />
 
           <div className={styles.authorInfo}>
-            <strong>{author.name}</strong>
-            <span>{author.role}</span>
+            <strong>{post.author.name}</strong>
+            <span>{post.author.role}</span>
           </div>
         </div>
-        <time title={publishedDateFormatted} dateTime={publishedAt.toISOString()}>
+        <time title={publishedDateFormatted} dateTime={post.publishedAt.toISOString()}>
           {publishedDateRelativeToNow}
         </time>
       </header>
 
       <div className={styles.content}>
-        {content.map(line => {
+        {post.content.map(line => {
           if (line.type === 'paragraph') {
             return <p key={line.content}>{line.content}</p>
           } else if (line.type === 'link') {
